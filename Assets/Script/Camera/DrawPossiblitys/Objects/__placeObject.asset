@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf593ba7c6968fe46861fbb12167ddef, type: 3}
+  m_Name: __placeObject
+  m_EditorClassIdentifier: 
+  singlePlaceObject: 0
+  objects:
+  - House/Misc/Chest
+  - House/Misc/Table
+  - House/Misc/Chair
+  - House/Misc/Candle
+  - House/Door/Door1
+  - House/Bed/Bed1
+  - House/Misc/Crib
+  - Nature/Rock/Rock1
+  - Nature/Rock/Rock2
+  - Nature/Rock/Rock3
+  - Nature/Rock/Rock4
+  - Building/Rubel/Rubel1
+  - Building/Rubel/Rubel2
+  - Building/Rubel/Rubel3
+  - Building/Rubel/Rubel4

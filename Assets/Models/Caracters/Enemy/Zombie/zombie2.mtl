@@ -1,0 +1,52 @@
+# MakeHuman exported MTL
+# www.makehumancommunity.org
+
+
+newmtl young_asian_female
+Kd 1 0.95 0.85
+Ks 0.02745 0.02745 0.02745
+d 0
+map_Kd textures/young_lightskinned_female_diffuse3.png
+map_D textures/young_lightskinned_female_diffuse3.png
+
+newmtl materialMaterial
+Kd 0.64 0.64 0.64
+Ks 0.5 0.5 0.5
+d 0
+map_Kd textures/casco.jpg
+map_D textures/casco.jpg
+
+newmtl full_beardMaterial
+Kd 0.8 0.8 0.8
+Ks 0.001376 0.001376 0.001376
+d 0
+map_Kd textures/Full_beard_black_diff.png
+map_D textures/Full_beard_black_diff.png
+
+newmtl materialMaterial
+Kd 1 1 1
+Ks 0.0002166 0.0002166 0.0002166
+d 0
+map_Kd textures/Moustache_black_diff.png
+map_D textures/Moustache_black_diff.png
+
+newmtl bronzeMaterial
+Kd 0.2938 0.1206 0.03972
+Ks 0.02558 0.02494 0.5
+d 0
+map_Kd textures/highBronze1.png
+map_D textures/highBronze1.png
+
+newmtl spartanredMaterial
+Kd 0.197 0.01001 0.03735
+Ks 0.5 0.5 0.5
+d 0
+map_Kd textures/spartanRed.png
+map_D textures/spartanRed.png
+
+newmtl goldMaterial
+Kd 0.64 0.3533 0.1927
+Ks 0.2542 0.1227 0.5
+d 0
+map_Kd textures/highBronze1.png
+map_D textures/highBronze1.png
