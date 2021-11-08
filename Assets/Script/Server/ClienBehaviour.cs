@@ -20,12 +20,30 @@ public class ClienBehaviour : MonoBehaviour
 
     public void connect(string ip, int port)
     {
+        try
+        {
+
+            if (client != null && client.Connected)
+            {
+                client.Close();
+            }
+        }
+        catch(Exception ex)
+        {
+            UiLogBehaviour.instance.addMesage("Error: Could not connect to server");
+            Debug.LogWarning(ex);
+            return;
+        }
         client = new TcpClient(ip, port);
         if (client.Connected)
         {
+            Debug.Log("connected");
             Thread thread = new Thread(this.Lisen);
             thread.Start();
+            Send(CommandBuilder.Instance.connected());
         }
+        else
+            Debug.LogWarning("not connected");
     }
 
     public bool isConnected()
@@ -35,19 +53,27 @@ public class ClienBehaviour : MonoBehaviour
 
     public void Lisen()
     {
-        while (isConnected())
+        try
         {
-            byte[] data = new byte[1024 * 1024];
-            String responseData = String.Empty;
-            NetworkStream stream = client.GetStream();
+            while (isConnected())
+            {
+                byte[] data = new byte[1024 * 1024];
+                String responseData = String.Empty;
+                NetworkStream stream = client.GetStream();
 
-            // Read the first batch of the TcpServer response bytes.
-            Int32 bytes = stream.Read(data, 0, data.Length); //(**This receives the data using the byte method**)
-            //responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes); //(**This converts it to string**)
-            //Debug.Log("From server: " + responseData);
-            var cmd = CommandBuilder.Instance.deserilize(data);
+                // Read the first batch of the TcpServer response bytes.
+                Int32 bytes = stream.Read(data, 0, data.Length); //(**This receives the data using the byte method**)
+                                                                 //responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes); //(**This converts it to string**)
+                                                                 //Debug.Log("From server: " + responseData);
+                var cmd = CommandBuilder.Instance.deserilize(data);
 
-            CommandInterpretor.Instance.doCommand(cmd);
+                //CommandInterpretor.Instance.doCommand(cmd);
+                WordBehaviour.instance.addCommand(cmd);
+            }
+        }
+        catch(SocketException ex)
+        {
+            Debug.LogWarning(ex);
         }
     }
     public void Send(byte[] data)

@@ -1,3 +1,4 @@
+using Assets.Script.Server.Commands;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -171,6 +172,17 @@ public class RoomMenuBehaviour : MonoBehaviour
         WordBehaviour.instance.resizeObject(objectProperiesTarget, distance.v3 * 0.1f);
     }
 
+    public void updateFloorToOtherPlayers()
+    {
+        CreateRoom.instance.updateFloorWallsToPlayers();
+    }
+
+    public void updateCurentRoom()
+    {
+        ClienBehaviour.instace.Send(
+            CommandBuilder.Instance.updateRoom(
+                CreateRoom.instance.getData()));
+    }
 
     private void Update()
     {

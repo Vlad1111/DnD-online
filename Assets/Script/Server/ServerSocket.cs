@@ -10,11 +10,11 @@ public class ServerSocket : IDisposable
 {
     public class ConnectedClient
     {
-        public Socket client;
+        public TcpClient client;
         public TcpListener server;
         public ServerSocket observer;
 
-        public ConnectedClient(Socket client, TcpListener server, ServerSocket observer)
+        public ConnectedClient(TcpClient client, TcpListener server, ServerSocket observer)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.server = server ?? throw new ArgumentNullException(nameof(server));
@@ -34,11 +34,11 @@ public class ServerSocket : IDisposable
             while (isConected())
             {
                 byte[] buffer = new byte[1024 * 1024];
-                var size = client.Receive(buffer);
+                var size = client.Client.Receive(buffer);
                 if (size > 0)
                 {
                     var cmd = CommandBuilder.Instance.deserilize(buffer);
-                    observer.sendCommandToOthers(cmd, this);
+                    observer.sendCommandToOthers(cmd, cmd.sendToAll?null:this);
                 }
             }
         }
@@ -52,7 +52,7 @@ public class ServerSocket : IDisposable
         public void Send(byte[] data)
         {
             if (isConected())
-                client.Send(data, data.Length, SocketFlags.None);
+                client.Client.Send(data, data.Length, SocketFlags.None);
         }
 
         public void Send(Command cmd)
@@ -66,32 +66,29 @@ public class ServerSocket : IDisposable
             server = null;
         }
     }
+
     private static ServerSocket instance;
-    private static ServerSocket Instance => getInstance();
+    public static ServerSocket Instance => getInstance();
     private TcpListener socket;
     private List<ConnectedClient> clients = new List<ConnectedClient>();
     private Thread lisenerThread = null;
 
-    public static ServerSocket getInstance(int port = 42069, int nrMaxPlayers = 7)
+    public static ServerSocket getInstance()
     {
         if (instance == null)
-            instance = new ServerSocket(port, nrMaxPlayers);
+            instance = new ServerSocket();
         return instance;
     }
-    private ServerSocket(int port, int nrPlayers = 7)
-    {
-        socket = new TcpListener(IPAddress.Any, port);
-        Start(port, nrPlayers);
-    }
+    private ServerSocket() { }
 
     public void Accept(int nrPlayers)
     {
-        Socket newSocket;
+        TcpClient newSocket;
         Debug.Log("server oppened");
         for (int i = 0; i < nrPlayers; i++)
         {
-            newSocket = socket.AcceptSocket();
-            Debug.Log(newSocket.RemoteEndPoint.ToString());
+            newSocket = socket.AcceptTcpClient();
+            //Debug.Log(newSocket.RemoteEndPoint.ToString());
             //RoomMenuBehaviour.instance.log(newSocket.RemoteEndPoint.ToString());
 
             lock (clients)
@@ -102,13 +99,19 @@ public class ServerSocket : IDisposable
         }
     }
 
+    public bool Connected() { return socket != null && socket.Server.Connected; }
+
     public void Start(int port = 42069, int nrPlayers = 7)
     {
-        RoomMenuBehaviour.instance.log("Started server on post " + port);
+        if (Connected())
+            socket.Stop();
+        socket = new TcpListener(IPAddress.Any, port);
 
         socket.Start();
         lisenerThread = new Thread(() => this.Accept(nrPlayers));
         lisenerThread.Start();
+
+        ClienBehaviour.instace.connect(GENERAL.GetLocalIPAddress(), port);
     }
 
     public void Stop()
@@ -135,6 +138,6 @@ public class ServerSocket : IDisposable
     {
         foreach (var cl in clients)
             if (cl != sender)
-                sender.Send(command);
+                cl.Send(command);
     }
 }

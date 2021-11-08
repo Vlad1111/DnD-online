@@ -22,13 +22,7 @@ namespace Assets.Script.Server
 
         public void doCommand(Command cmd)
         {
-            switch (cmd.comand)
-            {
-                case Command.ComandsType.LOG:
-                    break;
-                case Command.ComandsType.ERROR:
-                    break;
-            }
+            cmd.doThis(cmd.data);
         }
     }
 }

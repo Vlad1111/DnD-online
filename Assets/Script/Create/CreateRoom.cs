@@ -4,6 +4,7 @@ using UnityEngine;
 using static GENERAL;
 using System.Linq;
 using System;
+using Assets.Script.Server.Commands;
 
 [ExecuteInEditMode]
 public class CreateRoom : MonoBehaviour
@@ -52,6 +53,8 @@ public class CreateRoom : MonoBehaviour
                 return floor[fx][fy][x, y];
         return -1;
     }
+
+
     private float getTileValue(int x, int y)
     {
         int fx = x / 30;
@@ -123,7 +126,14 @@ public class CreateRoom : MonoBehaviour
         if (part == PartToUpdate.ALL || part == PartToUpdate.WALL)
             updateWallMesh(x, y);
     }
-    private void updateTileFloor(int fx, int fy, float[,] tile)
+    public void updateAllTiles()
+    {
+        for (int i = 0; i < floor.Count; i++)
+            for (int j = 0; j < floor[i].Count; j++)
+                if (floor[i][j] != null)
+                    updateTileFloor(i, j, PartToUpdate.ALL);
+    }
+    public void updateTileFloor(int fx, int fy, float[,] tile)
     {
         while (floor.Count <= fx)
             floor.Add(new List<float[,]>());
@@ -408,6 +418,21 @@ public class CreateRoom : MonoBehaviour
         caracterParent.localPosition = Vector3.zero;
         //fake();
     }
+    public void selectRoom(string roomName)
+    {
+        if (roomParent.name == roomName)
+            return;
+        roomParent = transform.Find(roomName);
+        if(roomParent == null)
+        {
+            creteRoom(roomName);
+            return;
+        }
+        floorParent = roomParent.Find("floor");
+        wallParent = roomParent.Find("wall");
+        objectParent = roomParent.Find("objects");
+        caracterParent = roomParent.Find("caracters");
+    }
     public void creteNewRoom()
     {
         roomParent = null;
@@ -436,8 +461,40 @@ public class CreateRoom : MonoBehaviour
         data.uvScale = uvScale;
         data.wallHeight = wallSize;
         data.verOffset = vertexOffsetScale;
-        Vector2Int off = Vector2Int.zero;
-        data.offset = new Vector3(off.x, 0, off.y);
+
+        var fl = new float[floor.Count][][,];
+        for (int i = 0; i < fl.Length; i++)
+            fl[i] = floor[i].ToArray();
+        data.floor = fl;
+
         return data;
+    }
+
+    public void updateRoom(GENERAL.RoomData data)
+    {
+        selectRoom(data.roomName);
+        floorMaterialName = data.floorMaterial;
+        wallsMaterialName = data.wallMaterial;
+        uvScale = data.uvScale;
+        wallSize = data.wallHeight;
+        vertexOffsetScale = data.verOffset;
+        floor = new List<List<float[,]>>();
+        for(int i = 0; i < data.floor.Length; i++)
+        {
+            var newL = new List<float[,]>(data.floor[i]);
+            floor.Add(newL);
+        }
+        updateAllTiles();
+    }
+
+    public void updateFloorWallsToPlayers()
+    {
+        for(int i=0;i<floor.Count;i++)
+            for(int j=0;j<floor[i].Count;j++)
+                if(floor[i][j] != null)
+                {
+                    var cmd = CommandBuilder.Instance.updateFloor(roomParent.name, i, j, floor[i][j]);
+                    ClienBehaviour.instace.Send(cmd);
+                }
     }
 }

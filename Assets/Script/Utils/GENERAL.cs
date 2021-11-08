@@ -4,6 +4,8 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Net;
+using System.Net.Sockets;
 
 public class GENERAL
 {
@@ -46,12 +48,11 @@ public class GENERAL
         public class ObjectData
         {
             public string prefLocation;
-            public Vector3 location;
+            public MyVector3 location;
             public Quaternion rotation;
-            public Vector3 scale;
+            public MyVector3 scale;
         }
         public string roomName;
-        public Vector3 offset;
         public float[][][,] floor;
         public float verOffset;
         public float uvScale;
@@ -154,5 +155,17 @@ public class GENERAL
             var obj = binForm.Deserialize(memStream);
             return (T)obj;
         }
+    }
+    public static string GetLocalIPAddress()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        throw new System.Exception("No network adapters with an IPv4 address in the system!");
     }
 }

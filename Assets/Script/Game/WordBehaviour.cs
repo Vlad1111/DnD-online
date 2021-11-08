@@ -1,6 +1,9 @@
+using Assets.Script.Server;
+using Assets.Script.Server.Commands;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class WordBehaviour : MonoBehaviour
@@ -18,13 +21,12 @@ public class WordBehaviour : MonoBehaviour
     private Vector2 grid_minPoint = Vector2.zero;
     private Vector2 grid_maxPoint = Vector2.one * 10;
 
-    public ServerSocket server;
+    private Queue<Command> comands = new Queue<Command>();
 
     private void Start()
     {
         //gridMaterial.renderQueue = 0;
         addGridPoint(Vector2.zero);
-        server = ServerSocket.getInstance(42069);
     }
 
     public void setSunPower(float val)
@@ -84,5 +86,22 @@ public class WordBehaviour : MonoBehaviour
         scale.y *= 1 + delta.y;
         scale.z *= 1 + delta.z;
         selectedObject.localScale = scale;
+    }
+
+    public void addCommand(Command cmd)
+    {
+        lock (comands)
+            comands.Enqueue(cmd);
+    }
+
+    public void FixedUpdate()
+    {
+        lock (comands)
+        {
+            while(comands.Count > 0)
+            {
+                CommandInterpretor.Instance.doCommand(comands.Dequeue());
+            }
+        }
     }
 }
