@@ -78,7 +78,8 @@ public class ClienBehaviour : MonoBehaviour
     }
     public void Send(byte[] data)
     {
-        client.Client.Send(data);
+        if(isConnected())
+            client.Client.Send(data);
     }
     public void Send(string[] mesages)
     {

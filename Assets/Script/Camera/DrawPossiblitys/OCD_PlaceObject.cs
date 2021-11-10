@@ -6,14 +6,14 @@ using UnityEngine.EventSystems;
 [CreateAssetMenu(fileName = "__placeObject", menuName = "On Camera Draw Objects/Place object")]
 public class OCD_PlaceObject : OCD_BaseDraw
 {
-    public bool singlePlaceObject = false;
+    public Transform selectedObject = null;
     private string objectPrefabLocation;
     private bool click = false;
     public float distance = 1;
     public override string getName() { return "Place object tool"; }
     public override void draw(Camera camera, Transform cursor, object[] args)
     {
-        if (!singlePlaceObject)
+        if (selectedObject == null)
         {
             if (RoomMenuBehaviour.instance)
                 objectPrefabLocation = RoomMenuBehaviour.instance.getPropName();
@@ -86,14 +86,19 @@ public class OCD_PlaceObject : OCD_BaseDraw
         {
             if (Input.GetAxis("Fire1") > 0)
             {
-                if (!click && cursor.childCount > 0)
+                if (!click && (cursor.childCount > 0 || selectedObject != null))
                 {
-                    var cursorChild = cursor.GetChild(0);
-                    if(cursorChild.tag == "Object")
-                        CreateRoom.instance.addObject(cursorChild);
+                    var cursorChild = selectedObject;
+                    if (selectedObject)
+                    {
+                        cursorChild = selectedObject;
+                        selectedObject = null;
+                    }
                     else
-                        CreateRoom.instance.addCaracter(cursorChild);
-                    singlePlaceObject = false;
+                    {
+                        cursorChild = cursor.GetChild(0);
+                    }
+                    WordBehaviour.instance.updateRoomObjectAndSendFurther(cursorChild);
                 }
                 click = true;
             }
@@ -109,7 +114,7 @@ public class OCD_PlaceObject : OCD_BaseDraw
             mr.enabled = true;
         for (int i = 0; i < cursor.childCount; i++)
             Destroy(cursor.GetChild(i).gameObject);
-        singlePlaceObject = false;
+        selectedObject = null;
     }
 
     public override void onSelect(Camera camera, Transform cursor, object[] args)

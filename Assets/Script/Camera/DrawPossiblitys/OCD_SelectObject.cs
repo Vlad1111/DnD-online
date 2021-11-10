@@ -37,7 +37,7 @@ public class OCD_SelectObject : OCD_PlaceObject
                                 try
                                 {
                                     var ocd = (OCD_PlaceObject)(ocds[i]);
-                                    ocd.singlePlaceObject = true;
+                                    ocd.selectedObject = obj;
                                     ocd.distance = hit.distance;
                                     obj.parent = cursor;
                                 }

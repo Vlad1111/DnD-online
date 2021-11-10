@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Script.Server.Commands
 {
@@ -54,6 +55,14 @@ namespace Assets.Script.Server.Commands
         public Command updateRoom(GENERAL.RoomData data)
         {
             return new Command(CommandFunctions.updateRoom, data);
+        }
+
+        public Command updateWordObject(Transform obj, string material=null)
+        {
+            var roomName = obj.parent.parent.name;
+            var data = new GENERAL.RoomData.ObjectData(obj);
+
+            return new Command(CommandFunctions.updateWordObject, new object[] { roomName, data });
         }
     }
 }

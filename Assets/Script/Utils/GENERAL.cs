@@ -47,10 +47,32 @@ public class GENERAL
         [System.Serializable]
         public class ObjectData
         {
+            public int id;
             public string prefLocation;
+            [field: System.NonSerialized]
+            public Transform wordObject = null;
             public MyVector3 location;
-            public Quaternion rotation;
+            public MyQuaternion rotation;
             public MyVector3 scale;
+            public string material = null;
+
+            public ObjectData(Transform wordObject)
+            {
+                this.wordObject = wordObject ?? throw new System.ArgumentNullException(nameof(wordObject));
+                prefLocation = wordObject.name;
+                location = wordObject.position;
+                rotation = wordObject.rotation;
+                scale = wordObject.localScale;
+            }
+
+            public ObjectData(string prefLocation, MyVector3 location, Quaternion rotation, MyVector3 scale)
+            {
+                this.prefLocation = prefLocation ?? throw new System.ArgumentNullException(nameof(prefLocation));
+                this.location = location ?? throw new System.ArgumentNullException(nameof(location));
+                this.rotation = rotation;
+                this.scale = scale ?? throw new System.ArgumentNullException(nameof(scale));
+                this.wordObject = null;
+            }
         }
         public string roomName;
         public float[][][,] floor;
@@ -59,6 +81,7 @@ public class GENERAL
         public float wallHeight;
         public string floorMaterial;
         public string wallMaterial;
+        public ObjectData[] objects = null;
     }
     [System.Serializable]
     public enum Direction

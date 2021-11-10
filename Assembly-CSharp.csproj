@@ -56,10 +56,13 @@
     <Compile Include="Assets\Script\Camera\DrawPossiblitys\OCD_BaseDraw.cs" />
     <Compile Include="Assets\Script\Camera\OnCameraDraw.cs" />
     <Compile Include="Assets\Script\Create\CreateRoom.cs" />
+    <Compile Include="Assets\Script\Menu\UiServerBehaviour.cs" />
     <Compile Include="Assets\Script\Utils\GENERAL.cs" />
+    <Compile Include="Assets\Script\Menu\UiLogBehaviour.cs" />
     <Compile Include="Assets\Script\Menu\UiButtonDataDTO.cs" />
     <Compile Include="Assets\ParrelSync\Examples\CustomArgumentExample.cs" />
     <Compile Include="Assets\Script\Server\Commands\CommandBuilder.cs" />
+    <Compile Include="Assets\Script\Utils\Math\MyVector3.cs" />
     <Compile Include="Assets\Script\Game\WordBehaviour.cs" />
     <Compile Include="Assets\Script\Camera\DrawPossiblitys\OCD_FloorWall.cs" />
     <Compile Include="Assets\Script\Server\Commands\CommandInterpretor.cs" />
@@ -71,9 +74,7 @@
     <Compile Include="Assets\Script\Server\ClienBehaviour.cs" />
     <Compile Include="Assets\Script\Menu\RoomMenuBehaviour.cs" />
     <Compile Include="Assets\Script\Camera\DrawPossiblitys\OCD_SelectObject.cs" />
-    <Compile Include="Assets\Script\Menu\UiServerBehaviour.cs" />
-    <Compile Include="Assets\Script\Menu\UiLogBehaviour.cs" />
-    <Compile Include="Assets\Script\Utils\Math\MyVector3.cs" />
+    <Compile Include="Assets\Script\Utils\Math\MyQuaternion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ParrelSync\VERSION.txt" />

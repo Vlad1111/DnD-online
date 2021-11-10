@@ -8,16 +8,17 @@ using UnityEngine;
 [System.Serializable]
 public class MyVector3
 {
-    private Vector3 data;
-    public static implicit operator Vector3(MyVector3 other) => other.data;
+    private float x = 0;
+    private float y = 0;
+    private float z = 0;
+    public static implicit operator Vector3(MyVector3 other) => new Vector3(other.x, other.y, other.z);
     public static implicit operator MyVector3(Vector3 other) => new MyVector3(other);
 
     public MyVector3(Vector3 data)
     {
-        this.data = data;
+        this.x = data.x;
+        this.y = data.y;
+        this.z = data.z;
     }
-    public MyVector3()
-    {
-        this.data = Vector3.zero;
-    }
+    public MyVector3() : this(Vector3.zero) { }
 }

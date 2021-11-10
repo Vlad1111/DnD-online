@@ -452,7 +452,7 @@ public class CreateRoom : MonoBehaviour
         }
     }
 
-    public GENERAL.RoomData getData()
+    public GENERAL.RoomData getData(bool getFloorData = true, bool getObjectsData = true, bool getCaractersData = true)
     {
         var data = new GENERAL.RoomData();
         data.roomName = roomParent.name;
@@ -462,10 +462,36 @@ public class CreateRoom : MonoBehaviour
         data.wallHeight = wallSize;
         data.verOffset = vertexOffsetScale;
 
-        var fl = new float[floor.Count][][,];
-        for (int i = 0; i < fl.Length; i++)
-            fl[i] = floor[i].ToArray();
-        data.floor = fl;
+        if (getFloorData)
+        {
+            var fl = new float[floor.Count][][,];
+            for (int i = 0; i < fl.Length; i++)
+                fl[i] = floor[i].ToArray();
+            data.floor = fl;
+        }
+        List<GENERAL.RoomData.ObjectData> objs = new List<RoomData.ObjectData>();
+        if (getObjectsData)
+        {
+            foreach(Transform ch in objectParent)
+            {
+                var d = WordBehaviour.instance.findObjectData(ch);
+                if (d != null)
+                    objs.Add(d);
+            }
+        }
+
+        if (getCaractersData)
+        {
+            foreach (Transform ch in caracterParent)
+            {
+                var d = WordBehaviour.instance.findObjectData(ch);
+                if (d != null)
+                    objs.Add(d);
+            }
+        }
+
+        if (objs.Count > 0)
+            data.objects = objs.ToArray();
 
         return data;
     }
@@ -478,11 +504,19 @@ public class CreateRoom : MonoBehaviour
         uvScale = data.uvScale;
         wallSize = data.wallHeight;
         vertexOffsetScale = data.verOffset;
-        floor = new List<List<float[,]>>();
-        for(int i = 0; i < data.floor.Length; i++)
+        if (data.floor != null)
         {
-            var newL = new List<float[,]>(data.floor[i]);
-            floor.Add(newL);
+            floor = new List<List<float[,]>>();
+            for (int i = 0; i < data.floor.Length; i++)
+            {
+                var newL = new List<float[,]>(data.floor[i]);
+                floor.Add(newL);
+            }
+        }
+        if(data.objects != null)
+        {
+            foreach (var d in data.objects)
+                WordBehaviour.instance.updateRoomObject(d);
         }
         updateAllTiles();
     }

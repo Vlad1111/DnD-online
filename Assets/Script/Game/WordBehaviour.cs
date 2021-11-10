@@ -22,6 +22,7 @@ public class WordBehaviour : MonoBehaviour
     private Vector2 grid_maxPoint = Vector2.one * 10;
 
     private Queue<Command> comands = new Queue<Command>();
+    private Dictionary<int, GENERAL.RoomData.ObjectData> objects = new Dictionary<int, GENERAL.RoomData.ObjectData>();
 
     private void Start()
     {
@@ -86,6 +87,96 @@ public class WordBehaviour : MonoBehaviour
         scale.y *= 1 + delta.y;
         scale.z *= 1 + delta.z;
         selectedObject.localScale = scale;
+    }
+
+    public int findOrCreateObjectData(GENERAL.RoomData.ObjectData data)
+    {
+        if (objects.ContainsKey(data.id))
+            return data.id;
+        int min = 100;
+        int max = 1000;
+        int k = (int)(min + UnityEngine.Random.value * (max - min));
+        while (objects.ContainsKey(k))
+        {
+            k = (int)(min + UnityEngine.Random.value * (max - min));
+            max += 1000;
+        }
+        objects.Add(k, data);
+        return k;
+    }
+    public int findObjectData(Transform obj, bool createNew = false)
+    {
+        foreach(var i in objects)
+        {
+            if (i.Value.wordObject == obj)
+                return i.Key;
+        }
+        if (createNew)
+        {
+            int min = 100;
+            int max = 1000;
+            int k = (int)(min + UnityEngine.Random.value * (max - min));
+            while (objects.ContainsKey(k))
+            {
+                k = (int)(min + UnityEngine.Random.value * (max - min));
+                max += 1000;
+            }
+            objects.Add(k, new GENERAL.RoomData.ObjectData(obj));
+            return k;
+        }
+        return int.MinValue;
+    }
+
+    public GENERAL.RoomData.ObjectData findObjectData(Transform obj)
+    {
+        int k = findObjectData(obj, false);
+        if (objects.ContainsKey(k))
+            return objects[k];
+        return null;
+    }
+
+    public void updateRoomObject(GENERAL.RoomData.ObjectData data)
+    {
+        data.wordObject = null;
+        var k = findOrCreateObjectData(data);
+        var oldData = objects[k];
+        if(oldData.wordObject == null)
+        {
+            var pref = GENERAL.loadPrefab(data.prefLocation);
+            if(pref == null)
+            {
+                objects.Remove(k);
+                return;
+            }
+            data.wordObject = Instantiate(pref);
+            data.wordObject.name = data.prefLocation;
+        }
+        else
+        {
+            data.wordObject = oldData.wordObject;
+        }
+        if (data.material != null)
+            setObjectTexture(data.wordObject, data.material);
+        data.wordObject.position = data.location;
+        data.wordObject.rotation = data.rotation;
+        data.wordObject.localScale = data.scale;
+        objects[k] = data;
+
+
+        if (data.wordObject.tag == "Object")
+            CreateRoom.instance.addObject(data.wordObject);
+        else CreateRoom.instance.addCaracter(data.wordObject);
+    }
+
+    public void updateRoomObjectAndSendFurther(Transform obj)
+    {
+        int k = findObjectData(obj, true);
+        objects[k] = new GENERAL.RoomData.ObjectData(obj);
+        if (obj.tag == "Object")
+            CreateRoom.instance.addObject(obj);
+        else CreateRoom.instance.addCaracter(obj);
+
+        ClienBehaviour.instace.Send(CommandBuilder.Instance.updateWordObject(obj));
     }
 
     public void addCommand(Command cmd)

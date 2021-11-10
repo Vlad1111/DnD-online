@@ -54,5 +54,13 @@ namespace Assets.Script.Server.Commands
             CreateRoom.instance.updateRoom(d);
             return data;
         };
+
+        public static Func<object, object> updateWordObject = (object data) =>
+        {
+            object[] d = data as object[];
+            CreateRoom.instance.selectRoom(d[0] as string);
+            WordBehaviour.instance.updateRoomObject(d[1] as GENERAL.RoomData.ObjectData);
+            return data;
+        };
     }
 }

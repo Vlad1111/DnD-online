@@ -35,9 +35,9 @@ public class RoomMenuBehaviour : MonoBehaviour
             wallTexture.options.Add(drv);
             objectTexture.options.Add(drv);
             if (CreateRoom.instance.wallsMaterialName == drv.text)
-                wallTexture.value = i;
+                wallTexture.SetValueWithoutNotify(i);
             if (CreateRoom.instance.floorMaterialName == drv.text)
-                floorTexture.value = i;
+                floorTexture.SetValueWithoutNotify(i);
         }
         updateProFiles();
     }
@@ -66,24 +66,29 @@ public class RoomMenuBehaviour : MonoBehaviour
     public void setRoomHeight(Slider val)
     {
         CreateRoom.instance.setWallHeights(val.value);
+        updateSmall();
     }
     public void setRoomUvScale(Slider val)
     {
         CreateRoom.instance.setUVSize(val.value);
+        updateSmall();
     }
     public void setRoomVerticsOffset(Slider val)
     {
         CreateRoom.instance.setVertecisOffset(val.value);
+        updateSmall();
     }
 
     public void setFloorTexture()
     {
         CreateRoom.instance.changeFloorMaterialName(floorTexture.options[floorTexture.value].text);
+        updateSmall();
     }
 
     public void setWalltexture()
     {
         CreateRoom.instance.changeWallMaterialName(wallTexture.options[wallTexture.value].text);
+        updateSmall();
     }
 
     public void updateProFiles()
@@ -177,6 +182,12 @@ public class RoomMenuBehaviour : MonoBehaviour
         CreateRoom.instance.updateFloorWallsToPlayers();
     }
 
+    public void updateSmall()
+    {
+        ClienBehaviour.instace.Send(
+            CommandBuilder.Instance.updateRoom(
+                CreateRoom.instance.getData(false, false, false)));
+    }
     public void updateCurentRoom()
     {
         ClienBehaviour.instace.Send(
