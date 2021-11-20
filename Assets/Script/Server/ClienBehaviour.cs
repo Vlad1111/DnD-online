@@ -17,33 +17,58 @@ public class ClienBehaviour : MonoBehaviour
         instace = this;
     }
     TcpClient client;
+    Thread clientThread = null;
 
     public void connect(string ip, int port)
     {
+        Debug.Log(isConnected());
         try
         {
-
-            if (client != null && client.Connected)
+            var auxCl = client;
+            if (isConnected())
             {
-                client.Close();
+                client = null;
+                auxCl.Close();
+            }
+            client = null;
+            if (clientThread != null)
+            {
+                clientThread.Abort();
             }
         }
-        catch(Exception ex)
+        catch (SocketException ex)
         {
             UiLogBehaviour.instance.addMesage("Error: Could not connect to server");
             Debug.LogWarning(ex);
             return;
         }
-        client = new TcpClient(ip, port);
-        if (client.Connected)
+        Debug.Log(isConnected());
+        try
         {
-            Debug.Log("connected");
-            Thread thread = new Thread(this.Lisen);
-            thread.Start();
-            Send(CommandBuilder.Instance.connected());
+            client = new TcpClient(ip, port);
+            if (client.Connected)
+            {
+                clientThread = new Thread(this.Lisen);
+                clientThread.Start();
+                Send(CommandBuilder.Instance.connected());
+                Debug.Log("connected");
+            }
+            else
+                Debug.LogWarning("not connected");
         }
-        else
-            Debug.LogWarning("not connected");
+        catch(SocketException ex)
+        {
+            Debug.LogWarning("errot to the socket");
+        }
+    }
+
+    private void connectThread()
+    {
+    }
+
+    private async void ConnectAsync()
+    {
+        Lisen();
     }
 
     public bool isConnected()
@@ -75,6 +100,7 @@ public class ClienBehaviour : MonoBehaviour
         {
             Debug.LogWarning(ex);
         }
+        Debug.Log("Client stoped ;(");
     }
     public void Send(byte[] data)
     {

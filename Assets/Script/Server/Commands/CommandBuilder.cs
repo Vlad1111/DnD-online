@@ -57,10 +57,10 @@ namespace Assets.Script.Server.Commands
             return new Command(CommandFunctions.updateRoom, data);
         }
 
-        public Command updateWordObject(Transform obj, string material=null)
+        public Command updateWordObject(Transform obj)
         {
             var roomName = obj.parent.parent.name;
-            var data = new GENERAL.RoomData.ObjectData(obj);
+            var data = WordBehaviour.instance.findObjectData(obj, true);
 
             return new Command(CommandFunctions.updateWordObject, new object[] { roomName, data });
         }

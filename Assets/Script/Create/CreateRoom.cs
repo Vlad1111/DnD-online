@@ -474,7 +474,7 @@ public class CreateRoom : MonoBehaviour
         {
             foreach(Transform ch in objectParent)
             {
-                var d = WordBehaviour.instance.findObjectData(ch);
+                var d = WordBehaviour.instance.findObjectData(ch, true);
                 if (d != null)
                     objs.Add(d);
             }
@@ -484,7 +484,7 @@ public class CreateRoom : MonoBehaviour
         {
             foreach (Transform ch in caracterParent)
             {
-                var d = WordBehaviour.instance.findObjectData(ch);
+                var d = WordBehaviour.instance.findObjectData(ch, true);
                 if (d != null)
                     objs.Add(d);
             }

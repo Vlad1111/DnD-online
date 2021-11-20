@@ -33,6 +33,10 @@ public class OnCameraDraw : MonoBehaviour
         cameraDraws[selected_OCD].onSelect(camera, cursor, new object[] { floorValue });
         RoomMenuBehaviour.instance.log(cameraDraws[selected_OCD].getName());
     }
+    public void selectNextOCD(int step)
+    {
+        selectOCD(selected_OCD + step);
+    }
 
     public void selectOCD(string toolName)
     {

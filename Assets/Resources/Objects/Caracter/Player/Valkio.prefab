@@ -113,6 +113,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Caracter
       objectReference: {fileID: 0}
+    - target: {fileID: 8408311277628160381, guid: 779aaea524f89284883517bc25d6f892, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4138461a70caa0343b48157f620ea5a1, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 779aaea524f89284883517bc25d6f892, type: 3}
 --- !u!1 &9092659431044935049 stripped

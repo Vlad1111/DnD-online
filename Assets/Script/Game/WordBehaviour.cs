@@ -60,6 +60,8 @@ public class WordBehaviour : MonoBehaviour
             }
         if (m == null)
             return;
+        var d = findObjectIndex(selectedObject);
+        objects[d].material = textureName;
         var rend = selectedObject.GetComponentsInChildren<MeshRenderer>();
         foreach (var r in rend)
         {
@@ -93,18 +95,10 @@ public class WordBehaviour : MonoBehaviour
     {
         if (objects.ContainsKey(data.id))
             return data.id;
-        int min = 100;
-        int max = 1000;
-        int k = (int)(min + UnityEngine.Random.value * (max - min));
-        while (objects.ContainsKey(k))
-        {
-            k = (int)(min + UnityEngine.Random.value * (max - min));
-            max += 1000;
-        }
-        objects.Add(k, data);
-        return k;
+        objects.Add(data.id, data);
+        return data.id;
     }
-    public int findObjectData(Transform obj, bool createNew = false)
+    public int findObjectIndex(Transform obj, bool createNew = false)
     {
         foreach(var i in objects)
         {
@@ -121,15 +115,15 @@ public class WordBehaviour : MonoBehaviour
                 k = (int)(min + UnityEngine.Random.value * (max - min));
                 max += 1000;
             }
-            objects.Add(k, new GENERAL.RoomData.ObjectData(obj));
+            objects.Add(k, new GENERAL.RoomData.ObjectData(k, obj));
             return k;
         }
         return int.MinValue;
     }
 
-    public GENERAL.RoomData.ObjectData findObjectData(Transform obj)
+    public GENERAL.RoomData.ObjectData findObjectData(Transform obj, bool createNew = false)
     {
-        int k = findObjectData(obj, false);
+        int k = findObjectIndex(obj, createNew);
         if (objects.ContainsKey(k))
             return objects[k];
         return null;
@@ -157,24 +151,23 @@ public class WordBehaviour : MonoBehaviour
         }
         if (data.material != null)
             setObjectTexture(data.wordObject, data.material);
+        if (data.wordObject.tag == "Object")
+            CreateRoom.instance.addObject(data.wordObject);
+        else CreateRoom.instance.addCaracter(data.wordObject);
+
         data.wordObject.position = data.location;
         data.wordObject.rotation = data.rotation;
         data.wordObject.localScale = data.scale;
         objects[k] = data;
-
-
-        if (data.wordObject.tag == "Object")
-            CreateRoom.instance.addObject(data.wordObject);
-        else CreateRoom.instance.addCaracter(data.wordObject);
     }
 
     public void updateRoomObjectAndSendFurther(Transform obj)
     {
-        int k = findObjectData(obj, true);
-        objects[k] = new GENERAL.RoomData.ObjectData(obj);
         if (obj.tag == "Object")
             CreateRoom.instance.addObject(obj);
         else CreateRoom.instance.addCaracter(obj);
+        int k = findObjectIndex(obj, true);
+        objects[k] = new GENERAL.RoomData.ObjectData(k, obj);
 
         ClienBehaviour.instace.Send(CommandBuilder.Instance.updateWordObject(obj));
     }

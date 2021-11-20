@@ -56,8 +56,11 @@ public class GENERAL
             public MyVector3 scale;
             public string material = null;
 
-            public ObjectData(Transform wordObject)
+            public ObjectData(int id, Transform wordObject)
             {
+                if (id <= 0)
+                    throw new System.ArgumentException("id must be positive");
+                this.id = id;
                 this.wordObject = wordObject ?? throw new System.ArgumentNullException(nameof(wordObject));
                 prefLocation = wordObject.name;
                 location = wordObject.position;
@@ -65,8 +68,11 @@ public class GENERAL
                 scale = wordObject.localScale;
             }
 
-            public ObjectData(string prefLocation, MyVector3 location, Quaternion rotation, MyVector3 scale)
+            public ObjectData(int id, string prefLocation, MyVector3 location, Quaternion rotation, MyVector3 scale)
             {
+                if (id <= 0)
+                    throw new System.ArgumentException("id must be positive");
+                this.id = id;
                 this.prefLocation = prefLocation ?? throw new System.ArgumentNullException(nameof(prefLocation));
                 this.location = location ?? throw new System.ArgumentNullException(nameof(location));
                 this.rotation = rotation;

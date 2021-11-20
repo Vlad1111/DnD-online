@@ -34,11 +34,18 @@ public class ServerSocket : IDisposable
             while (isConected())
             {
                 byte[] buffer = new byte[1024 * 1024];
-                var size = client.Client.Receive(buffer);
-                if (size > 0)
+                try
                 {
-                    var cmd = CommandBuilder.Instance.deserilize(buffer);
-                    observer.sendCommandToOthers(cmd, cmd.sendToAll?null:this);
+                    var size = client.Client.Receive(buffer);
+                    if (size > 0)
+                    {
+                        var cmd = CommandBuilder.Instance.deserilize(buffer);
+                        observer.sendCommandToOthers(cmd, cmd.sendToAll ? null : this);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Debug.LogWarning(ex);
                 }
             }
         }
@@ -64,6 +71,8 @@ public class ServerSocket : IDisposable
         public void Stop()
         {
             server = null;
+            client.Close();
+            client.Dispose();
         }
     }
 

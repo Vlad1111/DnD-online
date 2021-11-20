@@ -20,6 +20,7 @@ public class RoomMenuBehaviour : MonoBehaviour
     public Transform onScreenPropMenu;
     public Dropdown objectTexture;
     private Transform objectProperiesTarget = null;
+    public Slider tileValue;
 
     private void Start()
     {
@@ -160,21 +161,25 @@ public class RoomMenuBehaviour : MonoBehaviour
         if (name == "")
             return;
         WordBehaviour.instance.setObjectTexture(objectProperiesTarget, name);
+        ClienBehaviour.instace.Send(CommandBuilder.Instance.updateWordObject(objectProperiesTarget));
         selectObjet(null);
     }
 
     public void rotateObject(UiButtonDataDTO rotation)
     {
         WordBehaviour.instance.rotateObject(objectProperiesTarget, rotation.v3 * 30f);
+        ClienBehaviour.instace.Send(CommandBuilder.Instance.updateWordObject(objectProperiesTarget));
     }
 
     public void moveObject(UiButtonDataDTO distance)
     {
         WordBehaviour.instance.moveObject(objectProperiesTarget, distance.v3 * 0.1f);
+        ClienBehaviour.instace.Send(CommandBuilder.Instance.updateWordObject(objectProperiesTarget));
     }
     public void scaleObject(UiButtonDataDTO distance)
     {
         WordBehaviour.instance.resizeObject(objectProperiesTarget, distance.v3 * 0.1f);
+        ClienBehaviour.instace.Send(CommandBuilder.Instance.updateWordObject(objectProperiesTarget));
     }
 
     public void updateFloorToOtherPlayers()
@@ -193,6 +198,20 @@ public class RoomMenuBehaviour : MonoBehaviour
         ClienBehaviour.instace.Send(
             CommandBuilder.Instance.updateRoom(
                 CreateRoom.instance.getData()));
+    }
+
+    public void setDeleteTile()
+    {
+        tileValue.value = 0;
+    }
+    public void setWallTile()
+    {
+        tileValue.value = 0.2f;
+    }
+
+    public void setFloorTile()
+    {
+        tileValue.value = 0.8f;
     }
 
     private void Update()
