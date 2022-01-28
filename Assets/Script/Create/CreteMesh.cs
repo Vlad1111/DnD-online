@@ -84,17 +84,17 @@ public class CreteMesh
         for(int i=0;i<vertices.Count;i++)
         {
             var v = vertices[i];
-            float px = (offx + v.x) * 1.2f;
-            float py = (offy + v.z) * 1.2f;
-            float dx = 0.5f - Mathf.PerlinNoise(px + 231.3f, py + 431.3f);
-            float dy = 0.5f - Mathf.PerlinNoise(px + 384.3f, py + 562.3f);
+            float px = (offx + v.x) * 1.0f;
+            float py = (offy + v.z) * 1.0f;
+            float dx = 0.5f - Mathf.PerlinNoise(px, py);
+            float dy = 0.5f - Mathf.PerlinNoise(px + 416.3f, py + 541.3f);
 
-            uvs.Add(new Vector2((offx + v.x) * uvScale + dx * vertexOffset, (offy + v.z - v.y) * uvScale + dy * vertexOffset));
+            uvs.Add(new Vector2((offx + v.x) * uvScale + 0.1f * dx * vertexOffset, (offy + v.z - v.y) * uvScale + 0.1f * dy * vertexOffset));
 
-            px = (offx + v.x) * 1.2f;
-            py = (offy + v.z) * 1.2f;
-            dx = 0.5f - Mathf.PerlinNoise(px, py);
-            dy = 0.5f - Mathf.PerlinNoise(px + 416.3f, py + 541.3f);
+            //px = (offx + v.x) * 1.2f;
+            //py = (offy + v.z) * 1.2f;
+            //dx = 0.5f - Mathf.PerlinNoise(px, py);
+            //dy = 0.5f - Mathf.PerlinNoise(px + 416.3f, py + 541.3f);
 
             vertices[i] += new Vector3(dx * vertexOffset, 0, dy * vertexOffset);
         }
