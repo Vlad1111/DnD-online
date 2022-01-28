@@ -12,6 +12,7 @@ public class OnCameraDraw : MonoBehaviour
     public OCD_BaseDraw[] cameraDraws;
     public int selected_OCD = 0;
     public Slider floorValue;
+    public Slider cameraSensitivity;
     private void Awake()
     {
         instance = this;
@@ -49,7 +50,7 @@ public class OnCameraDraw : MonoBehaviour
     bool isWeelMoving = false;
     private void move()
     {
-        camera.transform.eulerAngles += new Vector3(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) * Time.deltaTime * 300;
+        camera.transform.eulerAngles += new Vector3(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0) * Time.deltaTime * 300 * cameraSensitivity.value;
         Vector3 newPoz = Vector3.zero;
         newPoz += Input.GetAxis("Vertical") * camera.transform.forward;
         newPoz += Input.GetAxis("Horizontal") * camera.transform.right;
